@@ -234,7 +234,7 @@ function setJogoRules(jogo) {
     mutex(Acabar, [Esgotar]);
     mutex(Golias, [Duplicar,Esgotar]);
     mutex(ImparEPar, [Esgotar,RaioCurto]);
-    mutex(AlvoPreciso, [Esgotar,RaioCurto]);
+    mutex(AlvoPreciso, [Esgotar]);
     mutex(Sangue, [Esgotar]);
     mutex(CamaraoNovo, [Teleporte,Esgotar]);
     mutex(CurarDaTerra, [Esgotar]);
@@ -264,7 +264,7 @@ function setJogoRules(jogo) {
     mutex(Penetracao, [Esgotar,Reflexao]);
     mutex(Envolver, [Esgotar,Reflexao]);
     mutex(Reflexao, [Esgotar,Penetracao,Envolver]);
-    mutex(RaioCurto, [ImparEPar,AlvoPreciso,Esgotar]);
+    mutex(RaioCurto, [ImparEPar,Esgotar]);
     mutex(Instante, [Esgotar]);
     mutex(Proteger, [Esgotar]);
     mutex(Identificar, [Esgotar]);
@@ -321,7 +321,6 @@ function setJogoRules(jogo) {
     mutex(Acabar, [OEspelho]);
     mutex(Golias, [Esgotar]);
     mutex(ImparEPar, [RaioCurto]);
-    mutex(AlvoPreciso, [RaioCurto]);
     mutex(CamaraoNovo, [Teleporte]);
     mutex(AEnergia, [Duplicar,TesouroPerdido,TesouroEscondido,OPilar,Dourado]);
     mutex(Teleporte, [CamaraoNovo]);
@@ -337,7 +336,7 @@ function setJogoRules(jogo) {
     mutex(Penetracao, [Reflexao]);
     mutex(Envolver, [Reflexao]);
     mutex(Reflexao, [Penetracao,Envolver]);
-    mutex(RaioCurto, [ImparEPar,AlvoPreciso,Esgotar]);
+    mutex(RaioCurto, [ImparEPar,Esgotar]);
   }
 }
 
