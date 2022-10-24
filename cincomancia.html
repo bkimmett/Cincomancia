@@ -303,7 +303,6 @@ function setJogoRules(jogo) {
 
     mutex(Ataque, [Mascara]);
     mutex(Mascara, [Ataque]);
-    mutex(Acabar, [OEspelho]);
     mutex(Golias, [Esgotar]);
     mutex(ImparEPar, [RaioCurto]);
     mutex(CamaraoNovo, [Teleporte]);
@@ -313,7 +312,6 @@ function setJogoRules(jogo) {
     mutex(Duplicar, [AEnergia,TesouroPerdido,TesouroEscondido,OPilar,Dourado]);
     mutex(Esgotar, [Golias,RaioCurto]);
     mutex(UrdiduraDoTempo, [TeleporteOutro]);
-    mutex(OEspelho, [Acabar]);
     mutex(TesouroPerdido, [AEnergia,Duplicar,TesouroEscondido,OPilar,Dourado]);
     mutex(TesouroEscondido, [AEnergia,Duplicar,TesouroPerdido,OPilar,Dourado]);
     mutex(OPilar, [AEnergia,Duplicar,TesouroPerdido,TesouroEscondido,Dourado]);
