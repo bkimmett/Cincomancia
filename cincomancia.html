@@ -339,15 +339,16 @@ Duplicar.max = 1;
 Caro.max = 1;
 
 var CLEAN = 0; // +TINT = SEL
-var MARK  = 1; // +TINT = MARK_PART
-var RED   = 2; // +TINT = SEL_RED
-var FORG  = 3; // +TINT = FORG_PART
-var EXCL  = 4; // +TINT = EXCL_PART
-var TINT  = 5;
-
+var MAYBE = 1;
+var MARK  = 2; // +TINT = MARK_PART
+var RED   = 3; // +TINT = SEL_RED
+var FORG  = 4; // +TINT = FORG_PART
+var EXCL  = 5; // +TINT = EXCL_PART
+var TINT  = 6;
+rgb(159, 240, 191)
 var COLOR = [
-  '#fff', '#36c', '#f00', '#808', '#33f',
-  '#ff0', '#acf', '#f80', '#caf', '#bbf'
+  '#fff', '#9fa', '#36c', '#f00', '#808', '#33f',
+  '#ff0', '#9f0', '#acf', '#f80', '#caf', '#bbf'
 ];
 
 function newState(arrs) {
@@ -397,40 +398,44 @@ function colorCell(w, i) {
   }
 }
 
-function timeSplice(w, i, n) {
-  var timeline = timelines[w];
-  for (var j = timeline.length - 1; j >= 0; j--) {
-    if (timeline[j][0] === i) {
-      if (n) {
+function timeSplice(w, i, n) { //wand, effect, clicked number?
+  var timeline = timelines[w]; //get timelines for this wand
+  for (var j = timeline.length - 1; j >= 0; j--) { //search timelines in reverse order
+    if (timeline[j][0] === i) { //if it's found for this effect...
+      if (n) {                  //and the number is set, then update the number
         timeline[j][2] = n;
-      } else {
-        timeline.splice(j, 1);
-        timeSplice(w, i, n);
+      } else {                  //if the number is not set...
+        timeline.splice(j, 1);  //strip this timeline item from the record
+        timeSplice(w, i, n);    //then repeat (why?)
         return;
       }
     }
   }
 }
 
-function cellClicked(w, i, numero) {
-  var s = state.cells[w][i];
+function cellClicked(w, i, numero) { //when you click on a cell - args wand ID, effect ID, did user click on number?
+  var s = state.cells[w][i];  //state - first cell is mode, second cell is substate (number for most of 'em)
   var s0 = s[0];
-  if (s0 !== EXCL && s[1] === -1 || s0 === MARK+TINT) {
-    timeSplice(w, i);
-    timelines[w].push([i, false, 5]);
+  if ((s0 !== EXCL && s0 !== CLEAN && s[1] === -1) || s0 === MARK+TINT) { //nontargeted (other than excluded) or partial mark 
+    timeSplice(w, i); //clear forgetting
+    timelines[w].push([i, false, 5]); //then set it as NOT forgotten
     state.cells[w][i] = [MARK, 5];
     sel = [w, i];
-  } else if (numero) {
+  } else if (numero) { //user clicked on number
     sel = (sel !== null && sel[0] === w && sel[1] === i) ? null : [w, i];
     recalc();
     return;
-  } else if (s0 === MARK || s0 === EXCL) {
-    timeSplice(w, i);
+  } else if (s0 === MARK || s0 === EXCL) { //if it was blue, for marked false or excluded
+    timeSplice(w, i); //clear forgetting
     state.cells[w][i] = [RED, 0];
     sel = [w, i];
   } else if (s0 === RED) {
-    timelines[w].push([i, true]);
+    timelines[w].push([i, true]); //set forgetting
     state.cells[w][i][0] = FORG;
+    sel = null;
+  } else if (s0 === CLEAN) {
+    timeSplice(w, i); //clear forgetting
+    state.cells[w][i] [MAYBE, -1];
     sel = null;
   } else {
     timeSplice(w, i);
