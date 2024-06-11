@@ -258,6 +258,12 @@ function setJogoRules(jogo) {
     mutex(Caro, [Esgotar]);
     mutex(OTerremoto, [Esgotar]);
     
+    //click each cell twice to mark it inactive
+    cellClicked(0, 27, 0);
+    cellClicked(1, 27, 0);
+    cellClicked(2, 27, 0);
+    cellClicked(3, 27, 0);
+    cellClicked(4, 27, 0);
     cellClicked(0, 27, 0);
     cellClicked(1, 27, 0);
     cellClicked(2, 27, 0);
@@ -415,12 +421,12 @@ function timeSplice(w, i, n) { //wand, effect, clicked number?
 function cellClicked(w, i, numero) { //when you click on a cell - args wand ID, effect ID, did user click on number?
   var s = state.cells[w][i];  //state - first cell is mode, second cell is substate (number for most of 'em)
   var s0 = s[0];
-  if ((s0 !== EXCL && s0 !== CLEAN && s[1] === -1) || s0 === MARK+TINT) { //nontargeted (other than excluded) or partial mark 
+  if (s0 === MAYBE && s[1] === -1 || s0 === MARK+TINT) { //nontargeted (other than excluded) or partial mark 
     timeSplice(w, i); //clear forgetting
     timelines[w].push([i, false, 5]); //then set it as NOT forgotten
     state.cells[w][i] = [MARK, 5];
     sel = [w, i];
-  } else if (numero) { //user clicked on number
+  } else if (s0 !== CLEAN && numero) { //user clicked on number
     sel = (sel !== null && sel[0] === w && sel[1] === i) ? null : [w, i];
     recalc();
     return;
@@ -432,7 +438,7 @@ function cellClicked(w, i, numero) { //when you click on a cell - args wand ID, 
     timelines[w].push([i, true]); //set forgetting
     state.cells[w][i][0] = FORG;
     sel = null;
-  } else if (s0 === CLEAN) {
+  } else if (s0 === CLEAN || s0 === EXCL+TINT || s0 === FORG+TINT) {
     timeSplice(w, i); //clear forgetting
     state.cells[w][i] = [MAYBE, -1];
     sel = null;
@@ -649,9 +655,9 @@ function recalc() {
         cleans *= o;
         marks *= o;
         if (cleans === 0) {
-          z = forgs === 0 ? (marks === 0 ? EXCL : MARK) : FORG+TINT;
+          z = forgs === 0 ? (marks === 0 ? EXCL : MARK) : (state.cells[w][i][0] == MAYBE ? MAYBE : FORG+TINT);
         } else if (marks === 0) {
-          z = (FX[i].max * forgs + cleans) * 2 > FX[i].max * t ? (state.cells[w][i][0] == MAYBE ? MAYBE : CLEAN) : EXCL+TINT;
+          z = state.cells[w][i][0] == MAYBE ? MAYBE : ((FX[i].max * forgs + cleans) * 2 > FX[i].max * t ? CLEAN : EXCL+TINT);
         } else {
           z = MARK+TINT;
         }
