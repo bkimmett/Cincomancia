@@ -345,7 +345,6 @@ var RED   = 3; // +TINT = SEL_RED
 var FORG  = 4; // +TINT = FORG_PART
 var EXCL  = 5; // +TINT = EXCL_PART
 var TINT  = 6;
-rgb(159, 240, 191)
 var COLOR = [
   '#fff', '#9fa', '#36c', '#f00', '#808', '#33f',
   '#ff0', '#9f0', '#acf', '#f80', '#caf', '#bbf'
@@ -435,7 +434,7 @@ function cellClicked(w, i, numero) { //when you click on a cell - args wand ID, 
     sel = null;
   } else if (s0 === CLEAN) {
     timeSplice(w, i); //clear forgetting
-    state.cells[w][i] [MAYBE, -1];
+    state.cells[w][i] = [MAYBE, -1];
     sel = null;
   } else {
     timeSplice(w, i);
@@ -553,7 +552,7 @@ function recalc() {
         x = ns.cells[w][y];
         last = t[j][2];
         for (k = 0; k < last; k++) {
-          if (x[k] === CLEAN || x[k] === FORG+TINT) {
+          if (x[k] === CLEAN || x[k] === MAYBE || x[k] === FORG+TINT) {
             x[k] = MARK;
           }
         }
@@ -635,7 +634,7 @@ function recalc() {
         }
         for (j = 0; j < 5; j++) {
           k = x[j];
-          if (k === CLEAN) {
+          if (k === CLEAN || k === MAYBE) {
             cleans++;
           } else if (k === MARK) {
             marks++;
@@ -652,7 +651,7 @@ function recalc() {
         if (cleans === 0) {
           z = forgs === 0 ? (marks === 0 ? EXCL : MARK) : FORG+TINT;
         } else if (marks === 0) {
-          z = (FX[i].max * forgs + cleans) * 2 > FX[i].max * t ? CLEAN : EXCL+TINT;
+          z = (FX[i].max * forgs + cleans) * 2 > FX[i].max * t ? (state.cells[w][i][0] == MAYBE ? MAYBE : CLEAN) : EXCL+TINT;
         } else {
           z = MARK+TINT;
         }
@@ -675,7 +674,7 @@ function recalc() {
       var col;
       var img;
       if (sel === null || sel[0] !== i) {
-        col = st === CLEAN ? null : COLOR[st];
+        col = (st === CLEAN || st === MAYBE) ? null : COLOR[st];
       } else {
         t = state.cells[i][sel[1]];
         if (j === t[1] - 1) {
