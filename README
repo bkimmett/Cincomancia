@@ -1,1 +1,1 @@
-https://aurensnyder.github.io/Cincomancia/ is a more up-to-date fork of Cincomancia.
+https://bkimmett.github.io/Cincomancia/ is a fork of the Cincomancia tracker tool for the game Cinco Paus. It is based on Aurensnyder's fork. This version adds the ability to mark unused wand cells as 'maybe', letting you enumerate all the possible results of your next move.
